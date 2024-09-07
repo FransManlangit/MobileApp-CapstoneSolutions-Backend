@@ -152,7 +152,7 @@ router.post("/logout", (req, res) => {
 });
 
 //edit user profile
-router.put("/userProfile/:id", uploadOptions.single("avatar"), async (req, res) => {
+router.put("/userProfile/:id", uploadOptions.single("image"), async (req, res) => {
   try {
     const file = req.file;
 
@@ -164,7 +164,7 @@ router.put("/userProfile/:id", uploadOptions.single("avatar"), async (req, res) 
     if (!userFind) return res.status(400).send("Invalid User Profile!");
     console.log(userFind, "Existing user profile data");
 
-    let avatar;
+    let image;
 
     const cloudinaryFolderOption = {
       folder: "UserProfile",
@@ -173,19 +173,19 @@ router.put("/userProfile/:id", uploadOptions.single("avatar"), async (req, res) 
 
     if (file) {
       const result = await cloudinary.v2.uploader.upload(req.file.path, cloudinaryFolderOption);
-      avatar = {
+      image = {
         public_id: result.public_id,
         url: result.secure_url,
       };
     } else {
-      avatar = userFind.avatar;
+      image = userFind.images;
     }
 
     const updatedUser = {
       email: req.body.email || userFind.email,
       firstname: req.body.firstname || userFind.firstname,
       lastname: req.body.lastname || userFind.lastname,
-      avatar: avatar,
+      avatar: image,
     };
 
     console.log("Updated user data:", updatedUser);
